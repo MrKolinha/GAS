@@ -8,52 +8,21 @@
   <meta name="theme-color" content="#1a73e8" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <link rel="apple-touch-icon" href="icon-192.png" />
-  <link rel="icon" href="icon-192.png" />
   <style>
     * { margin: 0; padding: 0; }
     html, body { height: 100%; }
     iframe { width: 100%; height: 100%; border: none; display: block; }
-
-    #loading {
-      position: fixed;
-      inset: 0;
-      background: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .spinner {
-      width: 40px;
-      height: 40px;
-      border: 4px solid #e0e0e0;
-      border-top-color: #1a73e8;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
   </style>
 </head>
 <body>
-  <div id="loading"><div class="spinner"></div></div>
-
   <iframe
-    id="frame"
     src="https://script.google.com/macros/s/AKfycbz_Tesh0J2lJudDTFB3xwvuRB3l-9qYOJ956yXNmfHguKb1q2o1r2_w3W6P_odsJSWa5A/exec"
     sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-top-navigation allow-modals"
   ></iframe>
-
   <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js').catch(() => {});
     }
-
-    document.getElementById('frame').addEventListener('load', () => {
-      document.getElementById('loading').style.display = 'none';
-    });
   </script>
 </body>
 </html>
