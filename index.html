@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Meu App</title>
+
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#1a73e8" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Meu App" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f1f3f4;
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    #loading {
+      position: fixed;
+      inset: 0;
+      background: #1a73e8;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      z-index: 100;
+      transition: opacity 0.4s ease;
+    }
+
+    #loading.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    #loading svg {
+      width: 64px;
+      height: 64px;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    #loading p {
+      color: white;
+      font-size: 14px;
+      opacity: 0.85;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(0.92); opacity: 0.7; }
+    }
+
+    #app-frame {
+      flex: 1;
+      width: 100%;
+      border: none;
+      display: block;
+    }
+
+    #offline-msg {
+      display: none;
+      position: fixed;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #333;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 24px;
+      font-size: 13px;
+      z-index: 200;
+    }
+
+    #offline-msg.show { display: block; }
+  </style>
+</head>
+<body>
+
+  <!-- Tela de loading -->
+  <div id="loading">
+    <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="32" cy="32" r="28" stroke="white" stroke-width="4" stroke-opacity="0.3"/>
+      <path d="M32 4 A28 28 0 0 1 60 32" stroke="white" stroke-width="4" stroke-linecap="round">
+        <animateTransform attributeName="transform" type="rotate" from="0 32 32" to="360 32 32" dur="1s" repeatCount="indefinite"/>
+      </path>
+    </svg>
+    <p>Carregando...</p>
+  </div>
+
+  <!-- O app do GAS roda aqui -->
+  <iframe
+    id="app-frame"
+    src="https://script.google.com/macros/s/AKfycbz_Tesh0J2lJudDTFB3xwvuRB3l-9qYOJ956yXNmfHguKb1q2o1r2_w3W6P_odsJSWa5A/exec"
+    allow="camera; microphone; geolocation"
+    sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-top-navigation"
+  ></iframe>
+
+  <div id="offline-msg">📶 Você está offline</div>
+
+  <script>
+    // Registra o Service Worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js')
+        .then(() => console.log('SW registrado'))
+        .catch(err => console.warn('SW erro:', err));
+    }
+
+    // Esconde o loading quando o iframe carrega
+    const frame = document.getElementById('app-frame');
+    const loading = document.getElementById('loading');
+
+    frame.addEventListener('load', () => {
+      loading.classList.add('hidden');
+    });
+
+    // Timeout fallback (caso iframe demore demais)
+    setTimeout(() => loading.classList.add('hidden'), 8000);
+
+    // Detecta offline
+    const offlineMsg = document.getElementById('offline-msg');
+    window.addEventListener('offline', () => offlineMsg.classList.add('show'));
+    window.addEventListener('online', () => offlineMsg.classList.remove('show'));
+    if (!navigator.onLine) offlineMsg.classList.add('show');
+  </script>
+</body>
+</html>
