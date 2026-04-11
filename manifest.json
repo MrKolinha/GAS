@@ -1,11 +1,11 @@
 {
-  "name": "Meu App",
-  "short_name": "Meu App",
+  "name": "Kola",
+  "short_name": "Kola",
   "description": "Aplicativo via Google Apps Script",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#1a73e8",
-  "theme_color": "#1a73e8",
+  "background_color": "#000000",
+  "theme_color": "#000000",
   "orientation": "portrait",
   "icons": [
     {
